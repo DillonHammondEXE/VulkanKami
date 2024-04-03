@@ -7,22 +7,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="src\vkm_window.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="vkm_window.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="first_app.cpp">
+    <ClCompile Include="src\first_app.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vkm_pipeline.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vkm_window.h">
+    <ClInclude Include="src\vkm_window.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="first_app.h">
+    <ClInclude Include="src\first_app.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\vkm_pipeline.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\compile.bat">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\shaders\simple_shader.vert">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\shaders\simple_shader.frag">
+      <Filter>src</Filter>
+    </None>
   </ItemGroup>
 </Project>

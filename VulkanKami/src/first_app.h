@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vkm_window.h"
+#include "vkm_pipeline.h"
 
 namespace vkm {
 	class FirstApp {
@@ -12,5 +13,6 @@ namespace vkm {
 		void run();
 	private:
 		VkmWindow vkmWindow{WIDTH, HEIGHT, "hello Vulkan!"};
+		VkmPipeline vkmPipeline{ "src/shaders/simple_shader.vert.spv","src/shaders/simple_shader.frag.spv"  };
 	};
 } // Namespace vkm
