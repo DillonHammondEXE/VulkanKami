@@ -19,6 +19,9 @@
     <ClCompile Include="src\vkm_pipeline.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\vkm_device.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vkm_window.h">
@@ -28,6 +31,7 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\vkm_pipeline.h" />
+    <ClInclude Include="src\vkm_device.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\compile.bat">

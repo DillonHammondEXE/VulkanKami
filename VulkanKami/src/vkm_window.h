@@ -17,6 +17,8 @@ namespace vkm {
 		VkmWindow &operator=(const VkmWindow &) = delete;
 
 		bool shouldClose() { return glfwWindowShouldClose(window); } // Wrapper function
+
+		void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 	private:
 		void initWindow();
 
