@@ -11,10 +11,10 @@ and understand the graphics pipeline and advanced graphics topics.
   
 
 ## Tools/Libraries/Frameworks Used
-Visual Studio 2017
-Vulkan SDK 1.3.280.0
-GLFW 3.4 54-bit Windows binaries
-GLM 1.0.1
+- Visual Studio 2017
+- Vulkan SDK 1.3.280.0
+- GLFW 3.4 54-bit Windows binaries
+- GLM 1.0.1
 
 ## Contact
 For any queries or feedback, please contact me at dillon.hammond2003@gmail.com
