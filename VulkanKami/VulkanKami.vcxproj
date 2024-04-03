@@ -159,7 +159,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="first_app.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="vkm_window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="first_app.h" />
+    <ClInclude Include="vkm_window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
