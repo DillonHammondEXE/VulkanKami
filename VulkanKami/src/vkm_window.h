@@ -17,6 +17,7 @@ namespace vkm {
 		VkmWindow &operator=(const VkmWindow &) = delete;
 
 		bool shouldClose() { return glfwWindowShouldClose(window); } // Wrapper function
+		VkExtent2D getExtent() { return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) }; }
 
 		void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 	private:
