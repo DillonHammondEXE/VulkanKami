@@ -57,7 +57,7 @@ namespace vkm {
 		auto fragCode = readFile(fragFilepath);
 
 		createShaderModule(vertCode, &vertShaderModule);
-		createShaderModule(vertCode, &fragShaderModule);
+		createShaderModule(fragCode, &fragShaderModule);
 
 		VkPipelineShaderStageCreateInfo shaderStages[2];
 		shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
