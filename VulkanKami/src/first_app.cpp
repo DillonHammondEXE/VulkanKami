@@ -36,8 +36,13 @@ namespace vkm {
 	}
 
 	void FirstApp::createPipeline() {
-		auto pipelineConfig =
-			VkmPipeline::defaultPipelineConfigInfo(vkmSwapChain.width(), vkmSwapChain.height());
+		// auto pipelineConfig =
+			// VkmPipeline::defaultPipelineConfigInfo(vkmSwapChain.width(), vkmSwapChain.height());
+		PipelineConfigInfo pipelineConfig{};
+		VkmPipeline::defaultPipelineConfigInfo(
+			pipelineConfig,
+			vkmSwapChain.width(),
+			vkmSwapChain.height());
 		pipelineConfig.renderPass = vkmSwapChain.getRenderPass();
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		vkmPipeline = std::make_unique<VkmPipeline>(

@@ -84,12 +84,12 @@ namespace vkm {
 		vertexInputInfo.pVertexBindingDescriptions = nullptr;
 
 		// Combine viewport and scissor into the viewport state (struct)
-		VkPipelineViewportStateCreateInfo viewportInfo{}; // Value intiialization
+		/* VkPipelineViewportStateCreateInfo viewportInfo{}; // Value intiialization
 		viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 		viewportInfo.viewportCount = 1;
 		viewportInfo.pViewports = &configInfo.viewport;
 		viewportInfo.scissorCount = 1;
-		viewportInfo.pScissors = &configInfo.scissor;
+		viewportInfo.pScissors = &configInfo.scissor; */
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -97,7 +97,7 @@ namespace vkm {
 		pipelineInfo.pStages = shaderStages;
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 		pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-		pipelineInfo.pViewportState = &viewportInfo;
+		pipelineInfo.pViewportState = &configInfo.viewportInfo;
 		pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
 		pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
 		pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
@@ -131,8 +131,12 @@ namespace vkm {
 		}
 	}
 
-	PipelineConfigInfo VkmPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
-		PipelineConfigInfo configInfo{};
+	void VkmPipeline::bind(VkCommandBuffer commandBuffer) {
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	}
+
+	void VkmPipeline::defaultPipelineConfigInfo(
+		PipelineConfigInfo& configInfo, uint32_t width, uint32_t height) {
 
 		// Input Assembly State: Defines how vertices are assembled into geometric primitives like triangles.
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -149,6 +153,12 @@ namespace vkm {
 		// Scissor cuts of triangles outside of the screen
 		configInfo.scissor.offset = { 0,0 };
 		configInfo.scissor.extent = { width, height };
+
+		configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		configInfo.viewportInfo.viewportCount = 1;
+		configInfo.viewportInfo.pViewports = &configInfo.viewport;
+		configInfo.viewportInfo.scissorCount = 1;
+		configInfo.viewportInfo.pScissors = &configInfo.scissor;
 
 		// Rasterization State: Controls how fragments are generated from geometric primitives.
 		configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -207,10 +217,6 @@ namespace vkm {
 		configInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
 		configInfo.depthStencilInfo.front = {};  // Optional
 		configInfo.depthStencilInfo.back = {};   // Optional
-
-
-
-		return configInfo;
 	}
 
 
