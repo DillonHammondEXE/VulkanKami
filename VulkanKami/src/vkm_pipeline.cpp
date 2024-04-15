@@ -132,6 +132,7 @@ namespace vkm {
 	}
 
 	void VkmPipeline::bind(VkCommandBuffer commandBuffer) {
+		// VK_PIPELINE_BIND_POINT_GRAPHICS (not compute or raytracing)
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	}
 
