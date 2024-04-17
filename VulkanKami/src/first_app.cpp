@@ -7,6 +7,7 @@
 namespace vkm {
 
 	FirstApp::FirstApp() {
+		loadModels();
 		createPipelineLayout();
 		createPipeline();
 		createCommandBuffers();
@@ -24,6 +25,85 @@ namespace vkm {
 		}
 		
 		vkDeviceWaitIdle(vkmDevice.device());
+	}
+
+	// From Brendan Galea
+	void FirstApp::sierpinski(
+		std::vector<VkmModel::Vertex> &vertices,
+		int depth,
+		glm::vec2 left,
+		glm::vec2 right,
+		glm::vec2 top) {
+		if (depth <= 0) {
+			vertices.push_back({ top });
+			vertices.push_back({ right });
+			vertices.push_back({ left });
+		}
+		else {
+			auto leftTop = 0.5f * (left + top);
+			auto rightTop = 0.5f * (right + top);
+			auto leftRight = 0.5f * (left + right);
+			sierpinski(vertices, depth - 1, left, leftRight, leftTop);
+			sierpinski(vertices, depth - 1, leftRight, right, rightTop);
+			sierpinski(vertices, depth - 1, leftTop, rightTop, top);
+		}
+	}
+
+	void FirstApp::kochSnowflake(
+		std::vector<VkmModel::Vertex>& vertices,
+		int depth,
+		glm::vec2 start,
+		glm::vec2 end,
+		float width = 0.01f) {  // width of the line as a very small value
+		if (depth == 0) {
+			glm::vec2 normal = glm::normalize(glm::vec2(end.y - start.y, -(end.x - start.x))) * width;
+
+			glm::vec2 v1 = start + normal;
+			glm::vec2 v2 = start - normal;
+			glm::vec2 v3 = end + normal;
+			glm::vec2 v4 = end - normal;
+
+			// First triangle
+			vertices.push_back({ v1 });
+			vertices.push_back({ v2 });
+			vertices.push_back({ v3 });
+
+			// Second triangle
+			vertices.push_back({ v2 });
+			vertices.push_back({ v4 });
+			vertices.push_back({ v3 });
+		}
+		else {
+			glm::vec2 vec = end - start;
+			glm::vec2 third1 = start + vec / 3.0f;
+			glm::vec2 third2 = start + 2.0f * vec / 3.0f;
+
+			// Calculate the point that forms the peak of the "bump"
+			float angle = glm::radians(60.0f); // 60 degrees for equilateral triangle
+			glm::vec2 peak = third1 + glm::vec2(
+				cos(angle) * (third2.x - third1.x) - sin(angle) * (third2.y - third1.y),
+				sin(angle) * (third2.x - third1.x) + cos(angle) * (third1.y - third2.y)
+			);
+
+			kochSnowflake(vertices, depth - 1, start, third1, width);
+			kochSnowflake(vertices, depth - 1, third1, peak, width);
+			kochSnowflake(vertices, depth - 1, peak, third2, width);
+			kochSnowflake(vertices, depth - 1, third2, end, width);
+		}
+	}
+
+	void FirstApp::loadModels() {
+		std::vector<VkmModel::Vertex> vertices;
+		glm::vec2 v1 = { -0.5f, -0.3f };
+		glm::vec2 v2 = { 0.5f, -0.3f };
+		glm::vec2 v3 = { 0.0f, 0.6f };
+
+		float lineWidth = 0.005f;
+		kochSnowflake(vertices, 4, v1, v2, lineWidth);
+		kochSnowflake(vertices, 4, v2, v3, lineWidth);
+		kochSnowflake(vertices, 4, v3, v1, lineWidth);
+
+		vkmModel = std::make_unique<VkmModel>(vkmDevice, vertices);
 	}
 
 	void FirstApp::createPipelineLayout() {
@@ -99,8 +179,8 @@ namespace vkm {
 			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			vkmPipeline->bind(commandBuffers[i]);
-			// buffer, Vert count, Instances, firstvert,firstinstance
-			vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+			vkmModel->bind(commandBuffers[i]);
+			vkmModel->draw(commandBuffers[i]);
 
 			vkCmdEndRenderPass(commandBuffers[i]);
 			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

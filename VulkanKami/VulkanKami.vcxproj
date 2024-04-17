@@ -98,6 +98,10 @@
       <AdditionalLibraryDirectories>X:\Vulkan\VulkanSDK\Lib;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert.spv &amp;&amp; X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag.spv</Command>
+      <Message>Compiling Vulkan Shaders</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +119,10 @@
       <AdditionalLibraryDirectories>X:\Vulkan\VulkanSDK\Lib;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert.spv &amp;&amp; X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag.spv</Command>
+      <Message>Compiling Vulkan Shaders</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -136,6 +144,10 @@
       <AdditionalLibraryDirectories>X:\Vulkan\VulkanSDK\Lib;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert.spv &amp;&amp; X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag.spv</Command>
+      <Message>Compiling Vulkan Shaders</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,10 +169,15 @@
       <AdditionalLibraryDirectories>X:\Vulkan\VulkanSDK\Lib;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.vert.spv &amp;&amp; X:\Vulkan\VulkanSDK\Bin\glslc.exe X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag -o X:\Vulkan\VulkanKami\VulkanKami\VulkanKami\src\shaders\simple_shader.frag.spv</Command>
+      <Message>Compiling Vulkan Shaders</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\first_app.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\vkm_model.cpp" />
     <ClCompile Include="src\vkm_swap_chain.cpp" />
     <ClCompile Include="src\vkm_device.cpp" />
     <ClCompile Include="src\vkm_pipeline.cpp" />
@@ -168,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\first_app.h" />
+    <ClInclude Include="src\vkm_model.h" />
     <ClInclude Include="src\vkm_swap_chain.h" />
     <ClInclude Include="src\vkm_device.h" />
     <ClInclude Include="src\vkm_pipeline.h" />

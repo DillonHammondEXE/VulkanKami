@@ -4,6 +4,7 @@
 #include "vkm_pipeline.h"
 #include "vkm_device.h"
 #include "vkm_swap_chain.h"
+#include "vkm_model.h"
 
 // Standard Library
 #include <memory>
@@ -24,17 +25,31 @@ namespace vkm {
 		void run();
 
 	private:
+		void loadModels();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
 		void drawFrame();
+		void sierpinski(
+			std::vector<VkmModel::Vertex> &vertices,
+			int depth,
+			glm::vec2 left,
+			glm::vec2 right,
+			glm::vec2 top);
+		void kochSnowflake(
+			std::vector<VkmModel::Vertex>& vertices,
+			int depth,
+			glm::vec2 start,
+			glm::vec2 end,
+			float lineWidth);
 		// ORDER HERE MATTERS
-		VkmWindow vkmWindow{WIDTH, HEIGHT, "hello Vulkan!"};
+		VkmWindow vkmWindow{WIDTH, HEIGHT, "VulkanKami"};
 		VkmDevice vkmDevice{ vkmWindow };
 		VkmSwapChain vkmSwapChain{ vkmDevice, vkmWindow.getExtent() };
 		std::unique_ptr<VkmPipeline> vkmPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
+		std::unique_ptr<VkmModel> vkmModel;
 
 	};
 } // Namespace vkm

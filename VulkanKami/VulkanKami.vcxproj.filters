@@ -25,6 +25,9 @@
     <ClCompile Include="src\vkm_swap_chain.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\vkm_model.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vkm_window.h">
@@ -36,6 +39,7 @@
     <ClInclude Include="src\vkm_pipeline.h" />
     <ClInclude Include="src\vkm_device.h" />
     <ClInclude Include="src\vkm_swap_chain.h" />
+    <ClInclude Include="src\vkm_model.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\compile.bat">
