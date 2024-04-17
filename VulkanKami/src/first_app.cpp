@@ -93,7 +93,7 @@ namespace vkm {
 	}
 
 	void FirstApp::loadModels() {
-		std::vector<VkmModel::Vertex> vertices;
+		/* std::vector<VkmModel::Vertex> vertices;
 		glm::vec2 v1 = { -0.5f, -0.3f };
 		glm::vec2 v2 = { 0.5f, -0.3f };
 		glm::vec2 v3 = { 0.0f, 0.6f };
@@ -101,7 +101,11 @@ namespace vkm {
 		float lineWidth = 0.005f;
 		kochSnowflake(vertices, 4, v1, v2, lineWidth);
 		kochSnowflake(vertices, 4, v2, v3, lineWidth);
-		kochSnowflake(vertices, 4, v3, v1, lineWidth);
+		kochSnowflake(vertices, 4, v3, v1, lineWidth); */
+		std::vector<VkmModel::Vertex> vertices{
+			{ {0.0f, -0.5f}, {1.0f, 0.0f, 0.0f} },
+			{ {0.5f, 0.5f},  {0.0f, 1.0f, 0.0f} },
+		{ {-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f} }};
 
 		vkmModel = std::make_unique<VkmModel>(vkmDevice, vertices);
 	}
