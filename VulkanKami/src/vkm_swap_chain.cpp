@@ -12,12 +12,23 @@ namespace vkm {
 
 VkmSwapChain::VkmSwapChain(VkmDevice &deviceRef, VkExtent2D extent)
     : device{deviceRef}, windowExtent{extent} {
-  createSwapChain();
-  createImageViews();
-  createRenderPass();
-  createDepthResources();
-  createFramebuffers();
-  createSyncObjects();
+	init();
+}
+VkmSwapChain::VkmSwapChain(VkmDevice &deviceRef, VkExtent2D extent, std::shared_ptr<VkmSwapChain> previous)
+	: device{ deviceRef }, windowExtent{ extent }, oldSwapChain{ previous } {
+	init();
+
+	// old swap chain isnt needed after init()
+	oldSwapChain = nullptr;
+}
+
+void VkmSwapChain::init() {
+	createSwapChain();
+	createImageViews();
+	createRenderPass();
+	createDepthResources();
+	createFramebuffers();
+	createSyncObjects();
 }
 
 VkmSwapChain::~VkmSwapChain() {
@@ -161,7 +172,7 @@ void VkmSwapChain::createSwapChain() {
   createInfo.presentMode = presentMode;
   createInfo.clipped = VK_TRUE;
 
-  createInfo.oldSwapchain = VK_NULL_HANDLE;
+  createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
   if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
     throw std::runtime_error("failed to create swap chain!");

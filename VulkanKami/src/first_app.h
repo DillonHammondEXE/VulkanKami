@@ -29,7 +29,10 @@ namespace vkm {
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
+		void recreateSwapChain();
+		void recordCommandBuffer(int imageIndex);
 		void sierpinski(
 			std::vector<VkmModel::Vertex> &vertices,
 			int depth,
@@ -45,7 +48,7 @@ namespace vkm {
 		// ORDER HERE MATTERS
 		VkmWindow vkmWindow{WIDTH, HEIGHT, "VulkanKami"};
 		VkmDevice vkmDevice{ vkmWindow };
-		VkmSwapChain vkmSwapChain{ vkmDevice, vkmWindow.getExtent() };
+		std::unique_ptr<VkmSwapChain> vkmSwapChain;
 		std::unique_ptr<VkmPipeline> vkmPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;

@@ -35,7 +35,7 @@ class VkmDevice {
 
   // Not copyable or movable
   VkmDevice(const VkmDevice &) = delete;
-  void operator=(const VkmDevice &) = delete;
+  VkmDevice operator=(const VkmDevice &) = delete;
   VkmDevice(VkmDevice &&) = delete;
   VkmDevice &operator=(VkmDevice &&) = delete;
 
