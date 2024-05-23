@@ -1,10 +1,19 @@
 #include "first_app.h"
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 // Standard Libraries
 #include <stdexcept>
 #include <array>
 
 namespace vkm {
+
+	struct SimplePushConstantData {
+		glm::vec2 offset;
+		alignas(16) glm::vec3 color;
+	};
 
 	FirstApp::FirstApp() {
 		loadModels();
@@ -111,12 +120,19 @@ namespace vkm {
 	}
 
 	void FirstApp::createPipelineLayout() {
+
+		VkPushConstantRange pushConstantRange{};
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = sizeof(SimplePushConstantData);
+
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 0;
 		pipelineLayoutInfo.pSetLayouts = nullptr;
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
-		pipelineLayoutInfo.pPushConstantRanges = nullptr;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 		if (vkCreatePipelineLayout(vkmDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) !=
 			VK_SUCCESS) {
 			throw std::runtime_error("Failed to create pipeline layout!");
@@ -191,6 +207,8 @@ namespace vkm {
 	}
 
 	void FirstApp::recordCommandBuffer(int imageIndex) {
+		static int frame = 0;
+		frame = (frame + 1) % 2999; // Animation loops every 1000 frames
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -208,7 +226,7 @@ namespace vkm {
 
 		std::array<VkClearValue, 2> clearValues{};
 		// Index 0 is color, Index 1 is depth
-		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
+		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f }; // Background color
 		clearValues[1].depthStencil = { 1.0f, 0 };
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 		renderPassInfo.pClearValues = clearValues.data();
@@ -228,7 +246,21 @@ namespace vkm {
 
 		vkmPipeline->bind(commandBuffers[imageIndex]);
 		vkmModel->bind(commandBuffers[imageIndex]);
-		vkmModel->draw(commandBuffers[imageIndex]);
+
+		for (int j = 0; j < 4; j++) {
+			SimplePushConstantData push{};
+			push.offset = { -0.5f + frame * 0.001f, -0.4f + j * 0.25f };
+			push.color = { 0.0f, 0.0f, 0.2f + 0.2f * j };
+
+			vkCmdPushConstants(
+				commandBuffers[imageIndex],
+				pipelineLayout,
+				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+				0,
+				sizeof(SimplePushConstantData),
+				&push);
+			vkmModel->draw(commandBuffers[imageIndex]);
+		}
 
 		vkCmdEndRenderPass(commandBuffers[imageIndex]);
 		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
