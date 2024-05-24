@@ -40,6 +40,7 @@
     <ClInclude Include="src\vkm_device.h" />
     <ClInclude Include="src\vkm_swap_chain.h" />
     <ClInclude Include="src\vkm_model.h" />
+    <ClInclude Include="src\vkm_game_object.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\compile.bat">

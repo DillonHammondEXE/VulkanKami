@@ -3,8 +3,9 @@
 #include "vkm_window.h"
 #include "vkm_pipeline.h"
 #include "vkm_device.h"
+#include "vkm_game_object.h"
 #include "vkm_swap_chain.h"
-#include "vkm_model.h"
+// #include "vkm_model.h"
 
 // Standard Library
 #include <memory>
@@ -25,7 +26,7 @@ namespace vkm {
 		void run();
 
 	private:
-		void loadModels();
+		void loadGameObjects();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -33,6 +34,7 @@ namespace vkm {
 		void drawFrame();
 		void recreateSwapChain();
 		void recordCommandBuffer(int imageIndex);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 		void sierpinski(
 			std::vector<VkmModel::Vertex> &vertices,
 			int depth,
@@ -52,7 +54,7 @@ namespace vkm {
 		std::unique_ptr<VkmPipeline> vkmPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
-		std::unique_ptr<VkmModel> vkmModel;
+		std::vector<VkmGameObject> gameObjects;
 
 	};
 } // Namespace vkm

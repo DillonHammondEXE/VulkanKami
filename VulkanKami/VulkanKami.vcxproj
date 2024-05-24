@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\first_app.h" />
+    <ClInclude Include="src\vkm_game_object.h" />
     <ClInclude Include="src\vkm_model.h" />
     <ClInclude Include="src\vkm_swap_chain.h" />
     <ClInclude Include="src\vkm_device.h" />
