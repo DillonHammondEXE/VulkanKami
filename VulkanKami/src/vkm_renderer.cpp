@@ -24,23 +24,20 @@ namespace vkm {
 		vkDeviceWaitIdle(vkmDevice.device());
 		if (vkmSwapChain == nullptr) {
 			vkmSwapChain = std::make_unique<VkmSwapChain>(vkmDevice, extent);
-		}
-		else {
-			vkmSwapChain = std::make_unique<VkmSwapChain>(vkmDevice, extent, std::move(vkmSwapChain));
-			if (vkmSwapChain->imageCount() != commandBuffers.size()) {
-				freeCommandBuffers();
-				createCommandBuffers();
+		} else {
+			std::shared_ptr<VkmSwapChain> oldSwapChain = std::move(vkmSwapChain);
+			vkmSwapChain = std::make_unique<VkmSwapChain>(vkmDevice, extent, oldSwapChain);
+
+			if (!oldSwapChain->compareSwapFormat(*vkmSwapChain.get())) {
+				throw std::runtime_error("Swap chain image(or depth) format has changed!");
 			}
 		}
 
-
-		// if render pass is compatible then we can do nothing here
-		// WELL BE BACK HERE SOON!!!!!!!!!!!!
 	}
 
 	void VkmRenderer::createCommandBuffers() {
 
-		commandBuffers.resize(vkmSwapChain->imageCount());
+		commandBuffers.resize(VkmSwapChain::MAX_FRAMES_IN_FLIGHT);
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -110,6 +107,7 @@ namespace vkm {
 		}
 
 		isFrameStarted = false;
+		currentFrameIndex = (currentFrameIndex + 1) % VkmSwapChain::MAX_FRAMES_IN_FLIGHT;
 	}
 	void VkmRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
 	
