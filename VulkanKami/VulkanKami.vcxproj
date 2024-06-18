@@ -178,6 +178,7 @@
     <ClCompile Include="src\first_app.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\vkm_model.cpp" />
+    <ClCompile Include="src\vkm_renderer.cpp" />
     <ClCompile Include="src\vkm_swap_chain.cpp" />
     <ClCompile Include="src\vkm_device.cpp" />
     <ClCompile Include="src\vkm_pipeline.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="src\first_app.h" />
     <ClInclude Include="src\vkm_game_object.h" />
     <ClInclude Include="src\vkm_model.h" />
+    <ClInclude Include="src\vkm_renderer.h" />
     <ClInclude Include="src\vkm_swap_chain.h" />
     <ClInclude Include="src\vkm_device.h" />
     <ClInclude Include="src\vkm_pipeline.h" />

@@ -28,6 +28,9 @@
     <ClCompile Include="src\vkm_model.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\vkm_renderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vkm_window.h">
@@ -41,6 +44,7 @@
     <ClInclude Include="src\vkm_swap_chain.h" />
     <ClInclude Include="src\vkm_model.h" />
     <ClInclude Include="src\vkm_game_object.h" />
+    <ClInclude Include="src\vkm_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\compile.bat">
