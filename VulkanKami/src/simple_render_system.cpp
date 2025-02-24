@@ -75,10 +75,12 @@ namespace vkm {
 
 		vkmPipeline->bind(commandBuffer);
 
+		auto projectionView = camera.getProjection() * camera.getView(); // Every rendered object uses the same projection and view matrix
+
 		for (auto& obj : gameObjects) {
 			SimplePushConstantData push{};
 			push.color = obj.color;
-			push.transform = camera.getProjection() * obj.transform.mat4(); // TEMPORARY SOLUTION FOR MATRIX MULTIPLICATION PERFORMED ON CPU
+			push.transform = projectionView * obj.transform.mat4(); // TEMPORARY SOLUTION FOR MATRIX MULTIPLICATION PERFORMED ON CPU
 			// Send Projection matirx and object model transformation matrix in vertex shader fields after implementing UNIFORM BUFFERS****
 
 			vkCmdPushConstants(

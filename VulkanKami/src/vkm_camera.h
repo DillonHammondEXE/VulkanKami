@@ -14,9 +14,16 @@ namespace vkm {
 
 		void setPerspectiveProjection(float fovy, float aspect, float near, float far);
 
+		// Position of the camera, direction camera is facing, which direction is up (initialized to the negative y direction)
+		void setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
+		void setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
+		void setViewYXZ(glm::vec3 position, glm::vec3 rotation); // YXZ Tait-Bryan Ordering
+
 		const glm::mat4& getProjection() const { return projectionMatrix; }
+		const glm::mat4& getView() const { return viewMatrix; }
 
 	private:
 		glm::mat4 projectionMatrix{ 1.f };
+		glm::mat4 viewMatrix{ 1.f }; // Stores Camera Transform
 	};
 }
