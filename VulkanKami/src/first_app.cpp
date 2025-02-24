@@ -1,5 +1,6 @@
 #include "first_app.h"
 
+#include "vkm_camera.h"
 #include "simple_render_system.h"
 
 #define GLM_FORCE_RADIANS
@@ -21,14 +22,18 @@ namespace vkm {
 
 	void FirstApp::run() {
 		SimpleRenderSystem simpleRenderSystem{ vkmDevice, vkmRenderer.getSwapChainRenderPass() };
-
+		VkmCamera camera{};
 
 		while (!vkmWindow.shouldClose()) {
 			glfwPollEvents();
-			
+
+			float aspect = vkmRenderer.getAspectRatio(); // Used to maintain cubes dimensions even when the window is stretched
+			// camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1); 
+			camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f); // 45-60 is common range, anyhting vertices outside the near and far range are CLIPPED
+
 			if (auto commandBuffer = vkmRenderer.beginFrame()) {
 				vkmRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
 				vkmRenderer.endSwapChainRenderPass(commandBuffer);
 				vkmRenderer.endFrame();
 			}
@@ -101,7 +106,7 @@ namespace vkm {
 
 		auto cube = VkmGameObject::createGameObject();
 		cube.model = vkmModel;
-		cube.transform.translation = { .0f, .0f, .5f };
+		cube.transform.translation = { .0f, .0f, 2.5f }; // Bigger Z value, farther away object is
 		cube.transform.scale = { .5f, .5f, .5f };
 		gameObjects.push_back(std::move(cube));
 	}

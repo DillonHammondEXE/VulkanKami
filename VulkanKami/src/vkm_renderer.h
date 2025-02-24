@@ -23,6 +23,7 @@ namespace vkm {
 		VkmRenderer &operator=(const VkmWindow &) = delete;
 
 		VkRenderPass getSwapChainRenderPass() const { return vkmSwapChain->getRenderPass(); }
+		float getAspectRatio() const { return vkmSwapChain->extentAspectRatio(); }
 		bool isFrameInProgress() const { return isFrameStarted; }
 
 		VkCommandBuffer getCurrentCommandBuffer() const {

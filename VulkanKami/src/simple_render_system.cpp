@@ -62,7 +62,10 @@ namespace vkm {
 	}
 
 
-	void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VkmGameObject> &gameObjects) {
+	void SimpleRenderSystem::renderGameObjects(
+		VkCommandBuffer commandBuffer,
+		std::vector<VkmGameObject> &gameObjects,
+		const VkmCamera &camera) {
 		for (auto& obj : gameObjects) {
 			obj.transform.rotation.y =
 				glm::mod<float>(obj.transform.rotation.y + 0.0005f, 2.f * glm::pi<float>());
@@ -75,7 +78,8 @@ namespace vkm {
 		for (auto& obj : gameObjects) {
 			SimplePushConstantData push{};
 			push.color = obj.color;
-			push.transform = obj.transform.mat4();
+			push.transform = camera.getProjection() * obj.transform.mat4(); // TEMPORARY SOLUTION FOR MATRIX MULTIPLICATION PERFORMED ON CPU
+			// Send Projection matirx and object model transformation matrix in vertex shader fields after implementing UNIFORM BUFFERS****
 
 			vkCmdPushConstants(
 				commandBuffer,

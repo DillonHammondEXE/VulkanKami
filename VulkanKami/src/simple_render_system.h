@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vkm_camera.h"
 #include "vkm_pipeline.h"
 #include "vkm_device.h"
 #include "vkm_game_object.h"
@@ -19,7 +20,10 @@ namespace vkm {
 		SimpleRenderSystem(const VkmWindow &) = delete;
 		SimpleRenderSystem &operator=(const VkmWindow &) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VkmGameObject> &gameObjects);
+		void renderGameObjects(
+			VkCommandBuffer commandBuffer,
+			std::vector<VkmGameObject> &gameObjects, 
+			const VkmCamera &camera);
 
 	private:
 		void createPipelineLayout();
