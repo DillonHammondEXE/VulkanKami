@@ -5,12 +5,18 @@
 
 namespace vkm {
 
-	VkmModel::VkmModel(VkmDevice &device, const std::vector<Vertex> &vertices) : vkmDevice{ device } {
-		createVertexBuffers(vertices);
+	VkmModel::VkmModel(VkmDevice &device, const VkmModel::Builder &builder) : vkmDevice{ device } {
+		createVertexBuffers(builder.vertices);
+		createIndexBuffers(builder.indices);
 	}
 	VkmModel::~VkmModel() {
 		vkDestroyBuffer(vkmDevice.device(), vertexBuffer, nullptr);
 		vkFreeMemory(vkmDevice.device(), vertexBufferMemory, nullptr);
+
+		if (hasIndexBuffer) {
+			vkDestroyBuffer(vkmDevice.device(), indexBuffer, nullptr);
+			vkFreeMemory(vkmDevice.device(), indexBufferMemory, nullptr);
+		}
 	}
 
 	void VkmModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
@@ -30,14 +36,47 @@ namespace vkm {
 		vkUnmapMemory(vkmDevice.device(), vertexBufferMemory);
 	}
 
+	void VkmModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
+		indexCount = static_cast<uint32_t>(indices.size());
+		hasIndexBuffer = indexCount > 0;
+		
+		if (!hasIndexBuffer) {
+			return;
+		}
+
+		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
+		vkmDevice.createBuffer(
+			bufferSize,
+			VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			indexBuffer,
+			indexBufferMemory);
+
+		void *data;
+		vkMapMemory(vkmDevice.device(), indexBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
+		vkUnmapMemory(vkmDevice.device(), indexBufferMemory);
+	}
+
 	void VkmModel::draw(VkCommandBuffer commandBuffer) {
-		vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+		if (hasIndexBuffer) {
+			vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+		}
+		else {
+			vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+		}
 	}
 
 	void VkmModel::bind(VkCommandBuffer commandBuffer) {
 		VkBuffer buffers[] = { vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
+
+		if (hasIndexBuffer) {
+			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+			// INDEX TYPE needs to match indices vector,
+			// You can save memory by using a 16 bit index INSTEAD for smaller models that require 65,535 vertices (Currently using the same for all models)
+		}
 	}
 
 	std::vector<VkVertexInputBindingDescription> VkmModel::Vertex::getBindingDescriptions() {
