@@ -1,5 +1,6 @@
 #include "first_app.h"
 
+#include "keyboard_movement_controller.h"
 #include "vkm_camera.h"
 #include "simple_render_system.h"
 
@@ -9,8 +10,11 @@
 #include <glm/gtc/constants.hpp>
 
 // Standard Libraries
-#include <stdexcept>
 #include <array>
+#include <chrono>
+#include <cassert>
+#include <stdexcept>
+
 
 namespace vkm {
 
@@ -23,11 +27,24 @@ namespace vkm {
 	void FirstApp::run() {
 		SimpleRenderSystem simpleRenderSystem{ vkmDevice, vkmRenderer.getSwapChainRenderPass() };
 		VkmCamera camera{};
-		// camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
 		camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.0f, 2.5f));
+
+		auto viewerObject = VkmGameObject::createGameObject(); // Has no model and is just used to store camera's state
+		KeyboardMovementController cameraController{};
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
 
 		while (!vkmWindow.shouldClose()) {
 			glfwPollEvents();
+
+			auto newTime = std::chrono::high_resolution_clock::now();
+			float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+			currentTime = newTime; \
+
+			//	frameTime = glm::min(frameTime, MAX_FRAME_TIME); // Optional frame limit with predefined constant
+
+			cameraController.moveInPlaneXZ(vkmWindow.getGLFWwindow(), frameTime, viewerObject);
+			camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
 			float aspect = vkmRenderer.getAspectRatio(); // Used to maintain cubes dimensions even when the window is stretched
 			// camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1); 
