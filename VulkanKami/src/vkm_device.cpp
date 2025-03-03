@@ -466,6 +466,7 @@ void VkmDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
   vkFreeCommandBuffers(device_, commandPool, 1, &commandBuffer);
 }
 
+// This implementation can be improved using a MEMORY BARRIER to prervent waiting as seen below (Implement Later)
 void VkmDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
   VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
