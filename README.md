@@ -13,10 +13,10 @@ and understand the graphics pipeline and advanced graphics topics.
 - Lighting
 - Wavefront model loading
 
-  ## Planned Features
-  -Implement common post processing techiques
-  -Implement Raytracing
-  -Add game engine interface
+## Planned Features
+- Implement common post processing techiques
+- Implement Raytracing
+- Add game engine interface
   
 
 ## Tools/Libraries/Frameworks Used
