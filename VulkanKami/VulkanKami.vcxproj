@@ -89,7 +89,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;X:\Vulkan\VulkanKami\VulkanKami\vendor\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;X:\Vulkan\VulkanKami\VulkanKami\vendor\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;X:\Vulkan\VulkanKami\VulkanKami\vendor\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -158,7 +158,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>X:\Vulkan\VulkanSDK\Include;X:\Vulkan\VulkanKami\VulkanKami\vendor\glm-1.0.1-light\glm;X:\Vulkan\VulkanKami\VulkanKami\vendor\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;X:\Vulkan\VulkanKami\VulkanKami\vendor\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

@@ -1,7 +1,12 @@
 #include "vkm_model.h"
 
+
+#define TINYOBJLOADER_IMPLEMENTATION 
+#include <tiny_obj_loader.h> // TEMPORARY MOVE THIS INTO ITS OWN CLASS LATER
+
 #include <cassert>
 #include <cstring>
+#include <iostream>
 
 namespace vkm {
 
@@ -17,6 +22,13 @@ namespace vkm {
 			vkDestroyBuffer(vkmDevice.device(), indexBuffer, nullptr);
 			vkFreeMemory(vkmDevice.device(), indexBufferMemory, nullptr);
 		}
+	}
+
+	std::unique_ptr<VkmModel> VkmModel::createModelFromFile(VkmDevice &device, const std::string &filepath) {
+		Builder builder{};
+		builder.loadModel(filepath);
+		std::cout << "Vertex count: " << builder.vertices.size() << "\n";
+		return std::make_unique<VkmModel>(device, builder);
 	}
 
 	void VkmModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
@@ -130,5 +142,65 @@ namespace vkm {
 		attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attributeDescriptions[1].offset = offsetof(Vertex, color);;
 		return attributeDescriptions;
+	}
+
+	void VkmModel::Builder::loadModel(const std::string &filepath) {
+		tinyobj::attrib_t attrib;
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		std::string warn, err;
+
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) {
+			std::cerr << "TinyObjLoader Warning: " << warn << std::endl;
+			std::cerr << "TinyObjLoader Error: " << err << std::endl;
+			throw std::runtime_error("Failed to load model: " + filepath);
+		}
+
+		vertices.clear();
+		indices.clear();
+
+		for (const auto &shape : shapes) {
+			for (const auto &index : shape.mesh.indices) {
+				Vertex vertex{};
+
+				if (index.vertex_index >= 0) {
+					// Tightly packed each vertex size 3 so we * 3
+					vertex.position = {
+						attrib.vertices[3 * index.vertex_index + 0],
+						attrib.vertices[3 * index.vertex_index + 1],
+						attrib.vertices[3 * index.vertex_index + 2],
+					};
+
+					auto colorIndex = 3 * index.vertex_index + 2; // Tinyobjloader supports the unofficial color format for wavefront files
+					if (colorIndex < attrib.colors.size()) {
+						vertex.color = {
+							attrib.colors[colorIndex - 2],
+							attrib.colors[colorIndex - 1],
+							attrib.colors[colorIndex - 0],
+						};
+					}
+					else {
+						vertex.color = { 1.f,1.f,1.f };
+					}
+				}
+
+				if (index.normal_index >= 0) {
+					vertex.normal = {
+						attrib.normals[3 * index.normal_index + 0],
+						attrib.normals[3 * index.normal_index + 1],
+						attrib.normals[3 * index.normal_index + 2],
+					};
+				}
+
+				if (index.texcoord_index >= 0) {
+					vertex.uv = {
+						attrib.texcoords[2 * index.texcoord_index + 0],
+						attrib.texcoords[2 * index.texcoord_index + 1],
+					};
+				}
+
+				vertices.push_back(vertex);
+			}
+		}
 	}
 }

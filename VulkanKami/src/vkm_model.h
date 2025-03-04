@@ -6,6 +6,9 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
+
+#include <memory>
+
 namespace vkm {
 	class VkmModel {
 	public:
@@ -13,6 +16,8 @@ namespace vkm {
 		struct Vertex {
 			glm::vec3 position;
 			glm::vec3 color;
+			glm::vec3 normal{};
+			glm::vec2 uv{};
 			static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
 			static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 		};
@@ -22,6 +27,8 @@ namespace vkm {
 			// untill it can be copied into the models, vertex, and index buffer memory
 			std::vector<Vertex> vertices{};
 			std::vector<uint32_t> indices{};
+
+			void loadModel(const std::string &filepath);
 		};
 
 		VkmModel(VkmDevice& device, const VkmModel::Builder &builder);
@@ -29,6 +36,8 @@ namespace vkm {
 
 		VkmModel(const VkmWindow &) = delete;
 		VkmModel &operator=(const VkmWindow &) = delete;
+
+		static std::unique_ptr<VkmModel> createModelFromFile(VkmDevice &device, const std::string &filepath);
 
 		void bind(VkCommandBuffer commandBuffer);
 		void draw(VkCommandBuffer commandBuffer);
