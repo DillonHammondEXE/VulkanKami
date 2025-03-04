@@ -198,6 +198,7 @@
     <ClInclude Include="src\vkm_swap_chain.h" />
     <ClInclude Include="src\vkm_device.h" />
     <ClInclude Include="src\vkm_pipeline.h" />
+    <ClInclude Include="src\vkm_utils.h" />
     <ClInclude Include="src\vkm_window.h" />
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@ namespace vkm {
 	void FirstApp::run() {
 		SimpleRenderSystem simpleRenderSystem{ vkmDevice, vkmRenderer.getSwapChainRenderPass() };
 		VkmCamera camera{};
-		camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.0f, 2.5f));
+		// camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.0f, 2.5f));
 
 		auto viewerObject = VkmGameObject::createGameObject(); // Has no model and is just used to store camera's state
 		KeyboardMovementController cameraController{};
@@ -39,7 +39,7 @@ namespace vkm {
 
 			auto newTime = std::chrono::high_resolution_clock::now();
 			float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
-			currentTime = newTime; \
+			currentTime = newTime;
 
 			//	frameTime = glm::min(frameTime, MAX_FRAME_TIME); // Optional frame limit with predefined constant
 
@@ -64,7 +64,7 @@ namespace vkm {
 
 	void FirstApp::loadGameObjects() {
 		std::shared_ptr<VkmModel> vkmModel = VkmModel::createModelFromFile(vkmDevice, 
-			"X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\models\\flat_vase.obj");
+			"X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\models\\smooth_vase.obj");
 
 		auto gameObj = VkmGameObject::createGameObject();
 		gameObj.model = vkmModel;

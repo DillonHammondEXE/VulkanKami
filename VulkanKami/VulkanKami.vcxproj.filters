@@ -57,6 +57,7 @@
     <ClInclude Include="src\simple_render_system.h" />
     <ClInclude Include="src\vkm_camera.h" />
     <ClInclude Include="src\keyboard_movement_controller.h" />
+    <ClInclude Include="src\vkm_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\compile.bat">

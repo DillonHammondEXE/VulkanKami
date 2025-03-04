@@ -1,12 +1,28 @@
 #include "vkm_model.h"
 
+#include "vkm_utils.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION 
 #include <tiny_obj_loader.h> // TEMPORARY MOVE THIS INTO ITS OWN CLASS LATER
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
 
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <unordered_map>
+#include <unordered_set> // TEMPORARY
+
+namespace std {
+	template <>
+	struct hash<vkm::VkmModel::Vertex> {
+		size_t operator()(vkm::VkmModel::Vertex const &vertex) const {
+			size_t seed = 0;
+			vkm::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
+			return seed;
+		}
+	};
+}
 
 namespace vkm {
 
@@ -27,6 +43,7 @@ namespace vkm {
 	std::unique_ptr<VkmModel> VkmModel::createModelFromFile(VkmDevice &device, const std::string &filepath) {
 		Builder builder{};
 		builder.loadModel(filepath);
+		std::cout << "Total indices count: " << builder.indices.size() << std::endl;
 		std::cout << "Vertex count: " << builder.vertices.size() << "\n";
 		return std::make_unique<VkmModel>(device, builder);
 	}
@@ -66,13 +83,13 @@ namespace vkm {
 	void VkmModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
 		indexCount = static_cast<uint32_t>(indices.size());
 		hasIndexBuffer = indexCount > 0;
-		
+
 		if (!hasIndexBuffer) {
 			return;
 		}
 
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
-		
+
 		VkBuffer stagingBuffer; // Staging Buffer is best used for models that are STATIC
 		VkDeviceMemory stagingBufferMemory;
 		vkmDevice.createBuffer(
@@ -151,13 +168,13 @@ namespace vkm {
 		std::string warn, err;
 
 		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) {
-			std::cerr << "TinyObjLoader Warning: " << warn << std::endl;
-			std::cerr << "TinyObjLoader Error: " << err << std::endl;
-			throw std::runtime_error("Failed to load model: " + filepath);
+			throw std::runtime_error(warn + err);
 		}
 
 		vertices.clear();
 		indices.clear();
+
+		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
 		for (const auto &shape : shapes) {
 			for (const auto &index : shape.mesh.indices) {
@@ -199,8 +216,13 @@ namespace vkm {
 					};
 				}
 
-				vertices.push_back(vertex);
+				if (uniqueVertices.count(vertex) == 0) {
+					uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+					vertices.push_back(vertex);
+				}
+				indices.push_back(uniqueVertices[vertex]);
 			}
 		}
+		std::cout << "UniqueVertices: " << uniqueVertices.size() << std::endl;
 	}
 }
