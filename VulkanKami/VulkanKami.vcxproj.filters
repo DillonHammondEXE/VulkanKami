@@ -40,6 +40,9 @@
     <ClCompile Include="src\keyboard_movement_controller.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\vkm_game_object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vkm_window.h">

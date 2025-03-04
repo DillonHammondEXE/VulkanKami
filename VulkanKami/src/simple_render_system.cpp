@@ -13,7 +13,7 @@ namespace vkm {
 
 	struct SimplePushConstantData {
 		glm::mat4 transform{ 1.f };
-		alignas(16) glm::vec3 color;
+		glm::mat4 normalMatrix{ 1.f };
 	};
 
 	SimpleRenderSystem::SimpleRenderSystem(VkmDevice& device, VkRenderPass renderPass) : vkmDevice{ device } {
@@ -71,14 +71,10 @@ namespace vkm {
 		auto projectionView = camera.getProjection() * camera.getView(); // Every rendered object uses the same projection and view matrix
 
 		for (auto& obj : gameObjects) {
-			/* obj.transform.rotation.y =
-				glm::mod<float>(obj.transform.rotation.y + 0.0005f, 2.f * glm::pi<float>());
-			obj.transform.rotation.x =
-				glm::mod<float>(obj.transform.rotation.x + 0.0003f, 2.f * glm::pi<float>()); */
-
 			SimplePushConstantData push{};
-			push.color = obj.color;
-			push.transform = projectionView * obj.transform.mat4(); // TEMPORARY SOLUTION FOR MATRIX MULTIPLICATION PERFORMED ON CPU
+			auto modelMatrix = obj.transform.mat4();
+			push.transform = projectionView * modelMatrix; // TEMPORARY SOLUTION FOR MATRIX MULTIPLICATION PERFORMED ON CPU
+			push.normalMatrix = obj.transform.normalMatrix();
 			// Send Projection matirx and object model transformation matrix in vertex shader fields after implementing UNIFORM BUFFERS****
 
 			vkCmdPushConstants(

@@ -64,13 +64,22 @@ namespace vkm {
 
 	void FirstApp::loadGameObjects() {
 		std::shared_ptr<VkmModel> vkmModel = VkmModel::createModelFromFile(vkmDevice, 
-			"X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\models\\smooth_vase.obj");
+			"X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\models\\flat_vase.obj");
 
 		auto gameObj = VkmGameObject::createGameObject();
 		gameObj.model = vkmModel;
-		gameObj.transform.translation = { .0f, .0f, 2.5f }; // Bigger Z value, farther away object is
-		gameObj.transform.scale = glm::vec3(3.f);
+		gameObj.transform.translation = { -.5f, .5f, 2.5f }; // Bigger Z value, farther away object is
+		gameObj.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
 		gameObjects.push_back(std::move(gameObj));
+
+		vkmModel = VkmModel::createModelFromFile(vkmDevice,
+			"X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\models\\smooth_vase.obj");
+
+		auto smoothVase = VkmGameObject::createGameObject();
+		smoothVase.model = vkmModel;
+		smoothVase.transform.translation = { .5f, .5f, 2.5f }; // Bigger Z value, farther away object is
+		smoothVase.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
+		gameObjects.push_back(std::move(smoothVase));
 	}
 
 } // Namespace vkm

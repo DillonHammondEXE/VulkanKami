@@ -180,6 +180,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\simple_render_system.cpp" />
     <ClCompile Include="src\vkm_camera.cpp" />
+    <ClCompile Include="src\vkm_game_object.cpp" />
     <ClCompile Include="src\vkm_model.cpp" />
     <ClCompile Include="src\vkm_renderer.cpp" />
     <ClCompile Include="src\vkm_swap_chain.cpp" />
