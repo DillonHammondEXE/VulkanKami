@@ -1,4 +1,6 @@
 # Vulkan Kami
+![VulkanGif2](https://github.com/user-attachments/assets/e7d38867-0059-4591-8d7e-f129f1555fd3)
+
 
 ## Overview
 This project is an intermediate sized C++ project using Vulkan. The goal of the project is for me to learn
