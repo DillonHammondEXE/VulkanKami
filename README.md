@@ -7,17 +7,26 @@
 This project is an intermediate sized C++ project using Vulkan. The goal of the project is for me to learn
 and understand the graphics pipeline and advanced graphics topics. 
 
-## Planned Features
-- 2D and 3D renderer
-- Orthographic and Perspectives cameras
+## Implemented Features
+- 2D and 3D renderer using Vulkan
+- Camera movement and rotation
 - Lighting
+- Wavefront model loading
+
+  ## Planned Features
+  -Implement common post processing techiques
+  -Implement Raytracing
+  -Add game engine interface
   
 
 ## Tools/Libraries/Frameworks Used
-- Visual Studio 2017
-- Vulkan SDK 1.3.280.0
 - GLFW 3.4 54-bit Windows binaries
 - GLM 1.0.1
+- Tinyobjloader 2.0.0
+- Visual Studio 2017
+- Vulkan SDK 1.3.280.0
+
+
 
 ## Contact
 For any queries or feedback, please contact me at dillon.hammond2003@gmail.com
