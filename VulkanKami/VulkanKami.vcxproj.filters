@@ -43,6 +43,9 @@
     <ClCompile Include="src\vkm_game_object.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\vkm_buffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vkm_window.h">
@@ -61,6 +64,8 @@
     <ClInclude Include="src\vkm_camera.h" />
     <ClInclude Include="src\keyboard_movement_controller.h" />
     <ClInclude Include="src\vkm_utils.h" />
+    <ClInclude Include="src\vkm_buffer.h" />
+    <ClInclude Include="src\vkm_frame_info.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\compile.bat">

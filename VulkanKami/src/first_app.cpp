@@ -1,22 +1,30 @@
 #include "first_app.h"
 
 #include "keyboard_movement_controller.h"
+#include "vkm_buffer.h"
 #include "vkm_camera.h"
 #include "simple_render_system.h"
 
+// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-// Standard Libraries
+// std
 #include <array>
 #include <chrono>
 #include <cassert>
 #include <stdexcept>
+#include <numeric>
 
 
 namespace vkm {
+
+	struct GlobalUbo {
+		glm::mat4 projectionView{ 1.f };
+		glm::vec3 lightdirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+	};
 
 	FirstApp::FirstApp() {
 		loadGameObjects();
@@ -25,6 +33,17 @@ namespace vkm {
 	FirstApp::~FirstApp() {}
 
 	void FirstApp::run() {
+		std::vector<std::unique_ptr<VkmBuffer>> uboBuffers(VkmSwapChain::MAX_FRAMES_IN_FLIGHT);
+		for (int i = 0; i < uboBuffers.size(); i++) {
+			uboBuffers[i] = std::make_unique<VkmBuffer>(
+				vkmDevice,
+				sizeof(GlobalUbo),
+				1,
+				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT); // | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT left out for now to demonstrate
+			uboBuffers[i]->map();
+		}
+
 		SimpleRenderSystem simpleRenderSystem{ vkmDevice, vkmRenderer.getSwapChainRenderPass() };
 		VkmCamera camera{};
 		// camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.0f, 2.5f));
@@ -51,8 +70,23 @@ namespace vkm {
 			camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f); // 45-60 is common range, anyhting vertices outside the near and far range are CLIPPED
 
 			if (auto commandBuffer = vkmRenderer.beginFrame()) {
+				int frameIndex = vkmRenderer.getFrameIndex();
+				FrameInfo frameInfo{
+					frameIndex,
+					frameTime,
+					commandBuffer,
+					camera
+				};
+
+				// Update
+				GlobalUbo ubo{};
+				ubo.projectionView = camera.getProjection() * camera.getView();
+				uboBuffers[frameIndex]->writeToBuffer(&ubo);
+				uboBuffers[frameIndex]->flush();
+
+				// Render
 				vkmRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+				simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
 				vkmRenderer.endSwapChainRenderPass(commandBuffer);
 				vkmRenderer.endFrame();
 			}

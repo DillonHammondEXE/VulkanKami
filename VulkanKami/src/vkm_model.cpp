@@ -30,15 +30,7 @@ namespace vkm {
 		createVertexBuffers(builder.vertices);
 		createIndexBuffers(builder.indices);
 	}
-	VkmModel::~VkmModel() {
-		vkDestroyBuffer(vkmDevice.device(), vertexBuffer, nullptr);
-		vkFreeMemory(vkmDevice.device(), vertexBufferMemory, nullptr);
-
-		if (hasIndexBuffer) {
-			vkDestroyBuffer(vkmDevice.device(), indexBuffer, nullptr);
-			vkFreeMemory(vkmDevice.device(), indexBufferMemory, nullptr);
-		}
-	}
+	VkmModel::~VkmModel() {}
 
 	std::unique_ptr<VkmModel> VkmModel::createModelFromFile(VkmDevice &device, const std::string &filepath) {
 		Builder builder{};
@@ -52,32 +44,28 @@ namespace vkm {
 		vertexCount = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount >= 3 && "Vertex count must be at least 3");
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
+		uint32_t vertexSize = sizeof(vertices[0]);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
-		vkmDevice.createBuffer(
-			bufferSize,
+		VkmBuffer stagingBuffer{
+			vkmDevice,
+			vertexSize,
+			vertexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			stagingBuffer,
-			stagingBufferMemory);
+		};
 
-		void *data;
-		vkMapMemory(vkmDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(vkmDevice.device(), stagingBufferMemory);
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void *)vertices.data());
 
-		vkmDevice.createBuffer(
-			bufferSize,
+		vertexBuffer = std::make_unique<VkmBuffer>(
+			vkmDevice,
+			vertexSize,
+			vertexCount,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // Uses the more OPTIMAL device local memory now
-			vertexBuffer,
-			vertexBufferMemory);
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT // Uses the more OPTIMAL device local memory now (Not optimal, may change this?)
+			);
 
-		vkmDevice.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-		vkDestroyBuffer(vkmDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(vkmDevice.device(), stagingBufferMemory, nullptr);
+		vkmDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
 	}
 
 	void VkmModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
@@ -89,32 +77,28 @@ namespace vkm {
 		}
 
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
+		uint32_t indexSize = sizeof(indices[0]);
 
-		VkBuffer stagingBuffer; // Staging Buffer is best used for models that are STATIC
-		VkDeviceMemory stagingBufferMemory;
-		vkmDevice.createBuffer(
-			bufferSize,
+		VkmBuffer stagingBuffer{
+			vkmDevice,
+			indexSize,
+			indexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			stagingBuffer,
-			stagingBufferMemory);
+		};
 
-		void *data;
-		vkMapMemory(vkmDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(vkmDevice.device(), stagingBufferMemory);
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void *)indices.data());
 
-		vkmDevice.createBuffer(
-			bufferSize,
+		indexBuffer = std::make_unique<VkmBuffer>(
+			vkmDevice,
+			indexSize,
+			indexCount,
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // Uses the more OPTIMAL device local memory now
-			indexBuffer,
-			indexBufferMemory);
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT // Pay attention to the staging buffers and bits being used may want to do this differently later
+			);
 
-		vkmDevice.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
-
-		vkDestroyBuffer(vkmDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(vkmDevice.device(), stagingBufferMemory, nullptr);
+		vkmDevice.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
 	}
 
 	void VkmModel::draw(VkCommandBuffer commandBuffer) {
@@ -127,12 +111,12 @@ namespace vkm {
 	}
 
 	void VkmModel::bind(VkCommandBuffer commandBuffer) {
-		VkBuffer buffers[] = { vertexBuffer };
+		VkBuffer buffers[] = { vertexBuffer->getBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
 		if (hasIndexBuffer) {
-			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+			vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
 			// INDEX TYPE needs to match indices vector,
 			// You can save memory by using a 16 bit index INSTEAD for smaller models that require 65,535 vertices (Currently using the same for all models)
 		}

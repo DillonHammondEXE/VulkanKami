@@ -179,6 +179,7 @@
     <ClCompile Include="src\keyboard_movement_controller.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\simple_render_system.cpp" />
+    <ClCompile Include="src\vkm_buffer.cpp" />
     <ClCompile Include="src\vkm_camera.cpp" />
     <ClCompile Include="src\vkm_game_object.cpp" />
     <ClCompile Include="src\vkm_model.cpp" />
@@ -192,7 +193,9 @@
     <ClInclude Include="src\first_app.h" />
     <ClInclude Include="src\keyboard_movement_controller.h" />
     <ClInclude Include="src\simple_render_system.h" />
+    <ClInclude Include="src\vkm_buffer.h" />
     <ClInclude Include="src\vkm_camera.h" />
+    <ClInclude Include="src\vkm_frame_info.h" />
     <ClInclude Include="src\vkm_game_object.h" />
     <ClInclude Include="src\vkm_model.h" />
     <ClInclude Include="src\vkm_renderer.h" />

@@ -63,12 +63,11 @@ namespace vkm {
 
 
 	void SimpleRenderSystem::renderGameObjects(
-		VkCommandBuffer commandBuffer,
-		std::vector<VkmGameObject> &gameObjects,
-		const VkmCamera &camera) {
-		vkmPipeline->bind(commandBuffer);
+		FrameInfo& frameInfo,
+		std::vector<VkmGameObject> &gameObjects) {
+		vkmPipeline->bind(frameInfo.commandBuffer);
 
-		auto projectionView = camera.getProjection() * camera.getView(); // Every rendered object uses the same projection and view matrix
+		auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView(); // Every rendered object uses the same projection and view matrix
 
 		for (auto& obj : gameObjects) {
 			SimplePushConstantData push{};
@@ -78,14 +77,14 @@ namespace vkm {
 			// Send Projection matirx and object model transformation matrix in vertex shader fields after implementing UNIFORM BUFFERS****
 
 			vkCmdPushConstants(
-				commandBuffer,
+				frameInfo.commandBuffer,
 				pipelineLayout,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 				0,
 				sizeof(SimplePushConstantData),
 				&push);
-			obj.model->bind(commandBuffer);
-			obj.model->draw(commandBuffer);
+			obj.model->bind(frameInfo.commandBuffer);
+			obj.model->draw(frameInfo.commandBuffer);
 		}
 	}
 

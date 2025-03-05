@@ -1,12 +1,14 @@
 #pragma once
 
+#include "vkm_buffer.h"
 #include "vkm_device.h"
 
+// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-
+// std
 #include <memory>
 #include <vector>
 
@@ -54,13 +56,11 @@ namespace vkm {
 
 		VkmDevice& vkmDevice;
 
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		std::unique_ptr<VkmBuffer> vertexBuffer;
 		uint32_t vertexCount;
 
 		bool hasIndexBuffer = false; // Allows the choice to just use vertices or vertex AND index buffer
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
+		std::unique_ptr<VkmBuffer> indexBuffer;
 		uint32_t indexCount;
 	};
 }
