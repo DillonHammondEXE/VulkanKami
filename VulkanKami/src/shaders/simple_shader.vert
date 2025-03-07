@@ -7,17 +7,25 @@ layout(location = 2) in vec3 normal;
 layout(location = 3) in vec2 uv;
 
 layout(location = 0) out vec3 fragColor;
+layout(location = 1) out vec3 fragPosWorld; // Need this to calculate direction to light source for EACH fragment (linearly interpolated)
+layout(location = 2) out vec3 fragNormalWorld; // Also interpolated for the fragment shader
+
+layout(set = 0, binding = 0) uniform GlobalUbo { // Set and Binding numbers must match what we set when setting up the descriptorSetLayout
+    mat4 projectionViewMatrix;
+    vec4 ambientLightColor; // W is intensity
+    vec3 lightPosition;
+    vec4 lightColor;
+} ubo;
 
 layout(push_constant) uniform Push { // Ideally we would want to push projection,view, and model matrices but for now we can only do 2 4x4
-    mat4 transform; // projection * view * model
+    mat4 modelMatrix;
     mat4 normalMatrix;
 } push;
 
-const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0)); // always ensure input vectors for lighting calculations are normalized
-const float AMBIENT = 0.02;
-
+// Note whenever doing calculations in a shader ensure that ALL VALUES are within the same space such as world space/object space
 void main() {
-    gl_Position = push.transform * vec4(position, 1.0); // 1.0 is the homogeneous coordinate
+vec4 positionWorld =  push.modelMatrix * vec4(position, 1.0); 
+    gl_Position = ubo.projectionViewMatrix * positionWorld;
 
     // Need to convert the normals into world space since the light direction is in world space, this is done by * with modelMatrix
     // Converted to mat3 since we do not need the translation data in mat4 since normals represent directions and not positions and are not affected
@@ -29,9 +37,7 @@ void main() {
     // mat3 normalMatrix = transpose(inverse(mat3(push.modelMatrix)));
     // vec3 normalWorldSpace = normalize(normalMatrix * normal);
 
-    vec3 normalWorldSpace = normalize(mat3(push.normalMatrix) * normal);
-
-    float lightIntensity = AMBIENT + max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0); // Normals facing away are negative so we set them to 0
-
-    fragColor = lightIntensity * color;
+    fragNormalWorld = normalize(mat3(push.normalMatrix) * normal);
+    fragPosWorld = positionWorld.xyz;
+    fragColor = color;
 }

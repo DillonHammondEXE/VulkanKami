@@ -11,6 +11,7 @@ namespace vkm {
 		float frameTime;
 		VkCommandBuffer commandBuffer;
 		VkmCamera &camera;
+		VkDescriptorSet globalDescriptorSet;
 	};
 
 }

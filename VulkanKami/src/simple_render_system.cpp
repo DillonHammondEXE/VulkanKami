@@ -12,12 +12,14 @@
 namespace vkm {
 
 	struct SimplePushConstantData {
-		glm::mat4 transform{ 1.f };
+		glm::mat4 modelMatrix{ 1.f };
 		glm::mat4 normalMatrix{ 1.f };
 	};
 
-	SimpleRenderSystem::SimpleRenderSystem(VkmDevice& device, VkRenderPass renderPass) : vkmDevice{ device } {
-		createPipelineLayout();
+	SimpleRenderSystem::SimpleRenderSystem(
+		VkmDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) 
+		: vkmDevice{ device } {
+		createPipelineLayout(globalSetLayout);
 		createPipeline(renderPass);
 	}
 
@@ -26,18 +28,19 @@ namespace vkm {
 	}
 
 
-	void SimpleRenderSystem::createPipelineLayout() {
+	void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
 
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 		pushConstantRange.offset = 0;
 		pushConstantRange.size = sizeof(SimplePushConstantData);
 
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0;
-		pipelineLayoutInfo.pSetLayouts = nullptr;
+		pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
+		pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 		if (vkCreatePipelineLayout(vkmDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) !=
@@ -67,14 +70,20 @@ namespace vkm {
 		std::vector<VkmGameObject> &gameObjects) {
 		vkmPipeline->bind(frameInfo.commandBuffer);
 
-		auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView(); // Every rendered object uses the same projection and view matrix
+		vkCmdBindDescriptorSets(
+			frameInfo.commandBuffer,
+			VK_PIPELINE_BIND_POINT_GRAPHICS,
+			pipelineLayout,
+			0,
+			1,
+			&frameInfo.globalDescriptorSet,
+			0, 
+			nullptr);
 
 		for (auto& obj : gameObjects) {
 			SimplePushConstantData push{};
-			auto modelMatrix = obj.transform.mat4();
-			push.transform = projectionView * modelMatrix; // TEMPORARY SOLUTION FOR MATRIX MULTIPLICATION PERFORMED ON CPU
+			push.modelMatrix = obj.transform.mat4();
 			push.normalMatrix = obj.transform.normalMatrix();
-			// Send Projection matirx and object model transformation matrix in vertex shader fields after implementing UNIFORM BUFFERS****
 
 			vkCmdPushConstants(
 				frameInfo.commandBuffer,

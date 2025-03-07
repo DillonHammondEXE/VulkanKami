@@ -15,7 +15,7 @@ namespace vkm {
 
 	public:
 
-		SimpleRenderSystem(VkmDevice& device, VkRenderPass renderPass);
+		SimpleRenderSystem(VkmDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const VkmWindow &) = delete;
@@ -24,7 +24,7 @@ namespace vkm {
 		void renderGameObjects(FrameInfo &frameInfo, std::vector<VkmGameObject> &gameObjects);
 
 	private:
-		void createPipelineLayout();
+		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);
 		// ORDER HERE MATTERS
 		VkmDevice& vkmDevice;

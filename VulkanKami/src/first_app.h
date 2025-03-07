@@ -1,12 +1,12 @@
 #pragma once
 
-#include "vkm_window.h"
+#include "vkm_descriptors.h"
 #include "vkm_device.h"
 #include "vkm_game_object.h"
 #include "vkm_renderer.h"
-// #include "vkm_model.h"
+#include "vkm_window.h"
 
-// Standard Library
+// std
 #include <memory>
 #include <vector>
 
@@ -32,6 +32,8 @@ namespace vkm {
 		VkmDevice vkmDevice{ vkmWindow };
 		VkmRenderer vkmRenderer{ vkmWindow, vkmDevice };
 
+		// Note: Order of declarations matters
+		std::unique_ptr<VkmDescriptorPool> globalPool{ };
 		std::vector<VkmGameObject> gameObjects;
 
 	};
