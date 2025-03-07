@@ -34,7 +34,7 @@ namespace vkm {
 
 		// Note: Order of declarations matters
 		std::unique_ptr<VkmDescriptorPool> globalPool{ };
-		std::vector<VkmGameObject> gameObjects;
+		VkmGameObject::Map gameObjects;
 
 	};
 } // Namespace vkm

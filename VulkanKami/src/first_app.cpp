@@ -101,7 +101,8 @@ namespace vkm {
 					frameTime,
 					commandBuffer,
 					camera,
-					globalDescriptorSets[frameIndex]
+					globalDescriptorSets[frameIndex],
+					gameObjects
 				};
 
 				// Update
@@ -112,7 +113,7 @@ namespace vkm {
 
 				// Render
 				vkmRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
+				simpleRenderSystem.renderGameObjects(frameInfo);
 				vkmRenderer.endSwapChainRenderPass(commandBuffer);
 				vkmRenderer.endFrame();
 			}
@@ -130,7 +131,7 @@ namespace vkm {
 		gameObj.model = vkmModel;
 		gameObj.transform.translation = { -.5f, .5f, 0.f }; // Bigger Z value, farther away object is
 		gameObj.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
-		gameObjects.push_back(std::move(gameObj));
+		gameObjects.emplace(gameObj.getId(), std::move(gameObj));
 
 		vkmModel = VkmModel::createModelFromFile(vkmDevice,
 			"X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\models\\smooth_vase.obj");
@@ -139,7 +140,7 @@ namespace vkm {
 		smoothVase.model = vkmModel;
 		smoothVase.transform.translation = { .5f, .5f, 0.f }; // Bigger Z value, farther away object is
 		smoothVase.transform.scale = glm::vec3(3.f, 1.5f, 3.f);
-		gameObjects.push_back(std::move(smoothVase)); 
+		gameObjects.emplace(smoothVase.getId(), std::move(smoothVase)); 
 
 		vkmModel = VkmModel::createModelFromFile(vkmDevice,
 			"X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\models\\quad.obj");
@@ -148,7 +149,7 @@ namespace vkm {
 		floor.model = vkmModel;
 		floor.transform.translation = { 0.f, .5f, 0.f }; // Bigger Z value, farther away object is
 		floor.transform.scale = glm::vec3(3.f, 1.f, 3.f);
-		gameObjects.push_back(std::move(floor));
+		gameObjects.emplace(floor.getId(), std::move(floor));
 	}
 
 } // Namespace vkm

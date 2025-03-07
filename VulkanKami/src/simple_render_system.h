@@ -21,7 +21,7 @@ namespace vkm {
 		SimpleRenderSystem(const VkmWindow &) = delete;
 		SimpleRenderSystem &operator=(const VkmWindow &) = delete;
 
-		void renderGameObjects(FrameInfo &frameInfo, std::vector<VkmGameObject> &gameObjects);
+		void renderGameObjects(FrameInfo &frameInfo);
 
 	private:
 		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
