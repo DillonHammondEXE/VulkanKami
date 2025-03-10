@@ -4,6 +4,7 @@
 #include "vkm_buffer.h"
 #include "vkm_camera.h"
 #include "simple_render_system.h"
+#include "point_light_system.h"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -23,8 +24,8 @@ namespace vkm {
 
 	// ALWEAYS DOUBLE CHECK ALIGNMENT RULES WHEN MAKING CHANGES TO BUFFER OBJECTS SUCH AS BELOW
 	struct GlobalUbo {
-		glm::mat4 projectionView{ 1.f };
-		// glm::vec3 lightdirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+		glm::mat4 projection{ 1.f };
+		glm::mat4 view{ 1.f };
 		glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, .02f }; // W is intensity
 		glm::vec3 lightPosition{ -1.f }; // Note 16 bit alignment
 		alignas(16) glm::vec4 lightColor{ 1.f }; // W is for light intensity
@@ -69,8 +70,11 @@ namespace vkm {
 			vkmDevice, 
 			vkmRenderer.getSwapChainRenderPass(), 
 			globalSetLayout->getDescriptorSetLayout() };
+		PointLightSystem pointLightSystem{
+			vkmDevice,
+			vkmRenderer.getSwapChainRenderPass(),
+			globalSetLayout->getDescriptorSetLayout() };
 		VkmCamera camera{};
-		// camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.0f, 2.5f));
 
 		auto viewerObject = VkmGameObject::createGameObject(); // Has no model and is just used to store camera's state
 		viewerObject.transform.translation.z = -2.5f;
@@ -107,13 +111,16 @@ namespace vkm {
 
 				// Update
 				GlobalUbo ubo{};
-				ubo.projectionView = camera.getProjection() * camera.getView();
+				ubo.projection = camera.getProjection();
+				ubo.view = camera.getView();
+
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
 				// Render
 				vkmRenderer.beginSwapChainRenderPass(commandBuffer);
 				simpleRenderSystem.renderGameObjects(frameInfo);
+				pointLightSystem.render(frameInfo);
 				vkmRenderer.endSwapChainRenderPass(commandBuffer);
 				vkmRenderer.endFrame();
 			}

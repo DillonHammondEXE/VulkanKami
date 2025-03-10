@@ -11,7 +11,8 @@ layout(location = 1) out vec3 fragPosWorld; // Need this to calculate direction 
 layout(location = 2) out vec3 fragNormalWorld; // Also interpolated for the fragment shader
 
 layout(set = 0, binding = 0) uniform GlobalUbo { // Set and Binding numbers must match what we set when setting up the descriptorSetLayout
-    mat4 projectionViewMatrix;
+    mat4 projection;
+    mat4 view;
     vec4 ambientLightColor; // W is intensity
     vec3 lightPosition;
     vec4 lightColor;
@@ -25,7 +26,7 @@ layout(push_constant) uniform Push { // Ideally we would want to push projection
 // Note whenever doing calculations in a shader ensure that ALL VALUES are within the same space such as world space/object space
 void main() {
 vec4 positionWorld =  push.modelMatrix * vec4(position, 1.0); 
-    gl_Position = ubo.projectionViewMatrix * positionWorld;
+    gl_Position = ubo.projection * (ubo.view * positionWorld); // () to prevent expensive matrix * matrix twice
 
     // Need to convert the normals into world space since the light direction is in world space, this is done by * with modelMatrix
     // Converted to mat3 since we do not need the translation data in mat4 since normals represent directions and not positions and are not affected
