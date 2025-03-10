@@ -21,6 +21,7 @@ namespace vkm {
 		PointLightSystem(const VkmWindow &) = delete;
 		PointLightSystem &operator=(const VkmWindow &) = delete;
 
+		void update(FrameInfo &frameInfo, GlobalUbo &ubo);
 		void render(FrameInfo &frameInfo);
 
 	private:
