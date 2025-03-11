@@ -18,6 +18,7 @@ struct PointLight {
 layout(set = 0, binding = 0) uniform GlobalUbo { // Set and Binding numbers must match what we set when setting up the descriptorSetLayout
     mat4 projection; // Could send projectView precomputed for a slight performance increase
     mat4 view;
+    mat4 invView;
     vec4 ambientLightColor; // W is intensity
     PointLight pointLights[10]; // Can use Specialization Constants instead of this
     int numLights;

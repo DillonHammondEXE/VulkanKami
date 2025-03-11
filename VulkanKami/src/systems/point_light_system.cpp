@@ -67,7 +67,7 @@ namespace vkm {
 			pipelineConfig);
 	}
 
-	/* void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
+	void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
 		auto rotateLight = glm::rotate(glm::mat4(1.f), frameInfo.frameTime,{ 0.f, -1.f, 0.f });
 
 		int lightIndex = 0;
@@ -88,9 +88,9 @@ namespace vkm {
 			lightIndex += 1;
 		}
 		ubo.numLights = lightIndex;
-	} */
+	}
 	// Advanced orbital system with elliptical paths and inclinations
-	void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
+	/* void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
 		static float totalTime = 0.0f;
 		totalTime += frameInfo.frameTime * 8;
 
@@ -155,7 +155,7 @@ namespace vkm {
 			lightIndex += 1;
 		}
 		ubo.numLights = lightIndex;
-	}
+	} */
 
 
 	void PointLightSystem::render(FrameInfo& frameInfo) {
