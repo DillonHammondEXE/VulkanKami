@@ -44,7 +44,7 @@ namespace vkm {
 		void bind(VkCommandBuffer commandBuffer);
 
 		static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
-
+		static void enableAlphaBlending(PipelineConfigInfo& configInfo); // Not using Order-independent transparency*
 
 	private:
 		static std::vector<char> readFile(const std::string& filepath);

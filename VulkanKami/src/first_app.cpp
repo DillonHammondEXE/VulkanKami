@@ -111,8 +111,11 @@ namespace vkm {
 
 				// Render
 				vkmRenderer.beginSwapChainRenderPass(commandBuffer);
+
+				// Order here matters
 				simpleRenderSystem.renderGameObjects(frameInfo);
 				pointLightSystem.render(frameInfo);
+
 				vkmRenderer.endSwapChainRenderPass(commandBuffer);
 				vkmRenderer.endFrame();
 			}
