@@ -8,7 +8,7 @@
 
 namespace vkm {
 
-	#define MAX_LIGHTS 10
+	#define MAX_LIGHTS 100
 
 	struct PointLight {
 		glm::vec4 position{}; // ignore w

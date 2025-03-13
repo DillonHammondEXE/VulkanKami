@@ -72,7 +72,7 @@ namespace vkm {
 			pipelineConfig);
 	}
 
-	void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
+	/* void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
 		auto rotateLight = glm::rotate(glm::mat4(1.f), frameInfo.frameTime,{ 0.f, -1.f, 0.f });
 
 		int lightIndex = 0;
@@ -82,8 +82,8 @@ namespace vkm {
 
 			assert(lightIndex < MAX_LIGHTS && "Point lights exceed maximum specified");
 
-			// Update light position
-			// obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
+			// Update light position for rotation
+			obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
 
 
 			// Copy light to ubo
@@ -93,28 +93,26 @@ namespace vkm {
 			lightIndex += 1;
 		}
 		ubo.numLights = lightIndex;
-	}
+	} */
 	// Advanced orbital system with elliptical paths and inclinations
-	/* void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
+	void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
 		static float totalTime = 0.0f;
-		totalTime += frameInfo.frameTime * 8;
-
+		totalTime += frameInfo.frameTime * 2.0f; // Slowed down as suggested earlier
 		int lightIndex = 0;
 		for (auto& kv : frameInfo.gameObjects) {
 			auto& obj = kv.second;
 			if (obj.pointLight == nullptr) continue;
-
 			assert(lightIndex < MAX_LIGHTS && "Point lights exceed maximum specified");
 
 			// Define unique orbital parameters for each light
-			const float orbitSpeed = 0.5f + (lightIndex * 0.15f);
+			const float orbitSpeed = 0.5f + (lightIndex * 0.05f); // Reduced increment
 			const float orbitPeriod = glm::two_pi<float>() / orbitSpeed;
 			const float currentAngle = totalTime / orbitPeriod;
 
-			// Orbital parameters
-			const float a = 2.0f + (lightIndex * 0.1f);  // Semi-major axis
-			const float b = 1.5f + (lightIndex * 0.1f);  // Semi-minor axis
-			const float inclination = glm::radians(15.0f + (lightIndex * 5.0f)); // Orbit inclination
+			// Orbital parameters - REDUCED SIZES HERE
+			const float a = 1.0f + (lightIndex * 0.03f);  // Smaller semi-major axis
+			const float b = 0.8f + (lightIndex * 0.02f);  // Smaller semi-minor axis
+			const float inclination = glm::radians(8.0f + (lightIndex * 2.0f)); // Less inclination
 
 			// Calculate elliptical orbit position
 			const float x = a * cos(currentAngle + lightIndex * 0.5f);
@@ -124,43 +122,33 @@ namespace vkm {
 			glm::mat4 inclinationMatrix = glm::rotate(glm::mat4(1.0f), inclination, glm::vec3(1.0f, 0.0f, 0.0f));
 
 			// Apply precession (slow rotation of the orbital plane)
-			float precessionSpeed = 0.1f;
+			float precessionSpeed = 0.05f; // Slower precession
 			glm::mat4 precessionMatrix = glm::rotate(glm::mat4(1.0f), totalTime * precessionSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
 
-			// Combine transformations
+			// Rest of your code remains the same
 			glm::vec4 position = precessionMatrix * inclinationMatrix * glm::vec4(x, 0.0f, z, 1.0f);
-
-			// Update light position
 			obj.transform.translation = glm::vec3(position);
-			obj.transform.translation.y -= 1;
+			obj.transform.translation.y -= 0.5f; // Reduced vertical offset
 
-			// Calculate distance-based intensity variations
+			// Remaining code unchanged
 			float distanceFromCenter = glm::length(obj.transform.translation);
-			float intensityFactor = 1.0f / (0.8f + 0.2f * distanceFromCenter); // Brighter when closer
-
-			// Add pulsing effect unique to each light
+			float intensityFactor = 1.0f / (0.8f + 0.2f * distanceFromCenter);
 			float pulseSpeed = 2.0f + lightIndex * 0.5f;
 			float pulseAmount = 0.2f;
 			float pulseFactor = 1.0f + pulseAmount * sin(totalTime * pulseSpeed);
-
-			// Change light color slightly based on position
 			glm::vec3 colorVariation = obj.color;
-			// Subtle color temperature shift based on height
 			float temperatureFactor = 0.1f * sin(totalTime + lightIndex);
 			colorVariation.r = glm::clamp(colorVariation.r + temperatureFactor, 0.0f, 1.0f);
 			colorVariation.b = glm::clamp(colorVariation.b - temperatureFactor, 0.0f, 1.0f);
-
-			// Copy light data to UBO
 			ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.f);
 			ubo.pointLights[lightIndex].color = glm::vec4(
 				colorVariation,
 				obj.pointLight->lightIntensity * intensityFactor * pulseFactor
 			);
-
 			lightIndex += 1;
 		}
 		ubo.numLights = lightIndex;
-	} */
+	}
 
 
 	void PointLightSystem::render(FrameInfo& frameInfo) {

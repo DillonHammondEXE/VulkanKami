@@ -153,14 +153,52 @@ namespace vkm {
 		floor.transform.scale = glm::vec3(3.f, 1.f, 3.f);
 		gameObjects.emplace(floor.getId(), std::move(floor));
 
-		std::vector<glm::vec3> lightColors{
-			 {1.f, .1f, .1f},
-			 {.1f, .1f, 1.f},
-			 {.1f, 1.f, .1f},
-			 {1.f, 1.f, .1f},
-			 {.1f, 1.f, 1.f},
-			 {1.f, 1.f, 1.f}  //
-		};
+		/* std::vector<glm::vec3> lightColors{
+			{1.f, .1f, .1f},    // Red
+			{.1f, .1f, 1.f},    // Blue
+			{.1f, 1.f, .1f},    // Green
+			{1.f, 1.f, .1f},    // Yellow
+			{.1f, 1.f, 1.f},    // Cyan
+			{1.f, 1.f, 1.f},    // White
+			{1.f, .1f, 1.f},    // Magenta
+			{.5f, .5f, 1.f},    // Light blue/periwinkle
+			{1.f, .5f, .0f},    // Orange
+			{1.f, .5f, .0f},    // Orange
+			{.7f, .3f, 1.f}     // Purple
+		}; */
+		//////////////////////////////////////////
+		std::vector<glm::vec3> lightColors{};
+		// Generate 30 distinct colors with good variation
+		int numOfColors = 100;
+		for (int i = 0; i < numOfColors; i++) {
+			// Use HSV to RGB conversion for even distribution
+			// Vary hue across the full spectrum (0 to 360 degrees)
+			float hue = (i * 360.0f) / float(numOfColors);
+
+			// Convert HSV to RGB (simplified conversion)
+			float h = hue / 60.0f;
+			int hi = static_cast<int>(h) % 6;
+			float f = h - static_cast<float>(static_cast<int>(h));
+
+			float v = .25f;  // Value (brightness) always high
+			float s = 0.8f;  // Saturation high but not max
+			float p = v * (1.0f - s);
+			float q = v * (1.0f - f * s);
+			float t = v * (1.0f - (1.0f - f) * s);
+
+			glm::vec3 color;
+			switch (hi) {
+			case 0: color = glm::vec3(v, t, p); break;
+			case 1: color = glm::vec3(q, v, p); break;
+			case 2: color = glm::vec3(p, v, t); break;
+			case 3: color = glm::vec3(p, q, v); break;
+			case 4: color = glm::vec3(t, p, v); break;
+			case 5: color = glm::vec3(v, p, q); break;
+			}
+
+			lightColors.push_back(color);
+		}
+		//////////////////////////////////////////////////////
 
 		for (int i = 0; i < lightColors.size(); i++) {
 			auto pointLight = VkmGameObject::makePointLight(0.2f);

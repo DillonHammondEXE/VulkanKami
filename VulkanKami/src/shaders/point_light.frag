@@ -13,7 +13,7 @@ layout(set = 0, binding = 0) uniform GlobalUbo { // Set and Binding numbers must
     mat4 view;
     mat4 invView;
     vec4 ambientLightColor; // W is intensity
-    PointLight pointLights[10]; // Can use Specialization Constants instead of this
+    PointLight pointLights[100]; // Can use Specialization Constants instead of this
     int numLights;
 } ubo;
 
@@ -31,5 +31,5 @@ void main() {
         discard;
     }
     float cosDis = 0.5 * (cos(dis * M_PI) + 1.0); // cool lighting effect
-    outColor = vec4(push.color.xyz, cosDis);
+    outColor = vec4(push.color.xyz + cosDis, cosDis);
 }
