@@ -5,6 +5,7 @@
 #include "vkm_camera.h"
 #include "simple_render_system.h"
 #include "point_light_system.h"
+#include "vkm_texture.h"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -27,6 +28,7 @@ namespace vkm {
 			VkmDescriptorPool::Builder(vkmDevice)
 			.setMaxSets(VkmSwapChain::MAX_FRAMES_IN_FLIGHT)
 			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VkmSwapChain::MAX_FRAMES_IN_FLIGHT)
+			.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VkmSwapChain::MAX_FRAMES_IN_FLIGHT)
 			.build();
 		loadGameObjects();
 	}
@@ -47,13 +49,23 @@ namespace vkm {
 
 		auto globalSetLayout = VkmDescriptorSetLayout::Builder(vkmDevice)
 			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+			.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 			.build();
+
+		Texture texture = Texture(vkmDevice, "X:\\Vulkan\\VulkanKami\\VulkanKami\\VulkanKami\\src\\textures\\Geomtry.png");
+
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.sampler = texture.getSampler();
+		imageInfo.imageView = texture.getImageView();
+		imageInfo.imageLayout = texture.getImageLayout();
+
 
 		std::vector<VkDescriptorSet> globalDescriptorSets(VkmSwapChain::MAX_FRAMES_IN_FLIGHT);
 		for (int i = 0; i < globalDescriptorSets.size(); i++) {
 			auto bufferInfo = uboBuffers[i]->descriptorInfo();
 			VkmDescriptorWriter(*globalSetLayout, *globalPool)
 				.writeBuffer(0, &bufferInfo)
+				.writeImage(1, &imageInfo)
 				.build(globalDescriptorSets[i]);
 		}
 

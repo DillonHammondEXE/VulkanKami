@@ -131,6 +131,12 @@ void VkmDevice::pickPhysicalDevice() {
 
   vkGetPhysicalDeviceProperties(physicalDevice, &properties);
   std::cout << "physical device: " << properties.deviceName << std::endl;
+  // VERSION CHECK (OPTIONAL)
+  uint32_t apiVersion = properties.apiVersion;
+  printf("Vulkan API Version: %d.%d.%d\n",
+	  VK_VERSION_MAJOR(apiVersion),
+	  VK_VERSION_MINOR(apiVersion),
+	  VK_VERSION_PATCH(apiVersion));
 }
 
 void VkmDevice::createLogicalDevice() {
